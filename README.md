@@ -195,9 +195,13 @@ Then, run the server
 python3 manage.py runserver
 ```
 
+## Creating the apps
+
 OK. Until here we have our Django project created, and we have our DB setup. Now, we need to create the apps that we will use in our project.
 
 This is were Django Rest Framework (DRF) comes into play. DRF is a powerful and flexible toolkit for building Web APIs.
+
+To install DRF, we need to run the following command:
 
 ```bash
 pip install djangorestframework
@@ -212,6 +216,76 @@ INSTALLED_APPS = [
     ...
 ]
 ```
+### Setting up the home page
+
+It is not mandatory, but it would be good to have a page that indicates that the API is working. For that, we will create a views.py file in the main folder (api_positive), and will use the api_view decorator from DRF.
+
+The @api_view decorator It takes a list of HTTP methods that your view should respond to.
+
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET'])
+#your code here
+```
+
+*The api_view decorator only responds to GET requests by default. If you wanted to respond to POST requests as well, you would need to add it to the list of methods.*
+
+Please, refer to the views.py file in the main folder (api_positive) to see how it was done. It is very simple, we are only returning a JSON response.
+
+Then, we need to add the url to the urls.py file in the main folder (api_positive)
+
+```python
+from django.urls import path
+from views import root_route
+
+urlpatterns = [
+    path('', root_route, name='root'),
+]
+```
+
+Now, if we go to the browser, we will see the JSON response.
+
+![root_route](./README_images/root_route_drf.png)
+
+### Setting up the authentication
+
+Danjo Rest Framework (DRF) has a built-in authentication system, but we will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework.
+
+To install dj-rest-auth, we need to run the following command:
+
+```bash
+pip install dj-rest-auth
+```
+
+Then, we need to add the following lines to the settings.py file
+
+```python
+INSTALLED_APPS = [
+    ...
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    ...
+]
+```
+
+Then, we need to add the following lines to the urls.py file
+
+```python
+urlpatterns = [
+    ...
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    ...
+]
+```
+
+Now, we need to migrate the DB
+
+```bash
+python3 manage.py migrate
+```
+
 
 
 We are going to use CLOUDINARY to store the images of the users. So, we need to install the cloudinary package
@@ -268,7 +342,6 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 The MEDIA_URL is the URL where the images will be stored by Django. In this case, we will use the default one, which is /media/
 
-## Creating the apps
 
 Now, we need to create the apps that we will use in our project. In this case, we will create the following apps:
 
@@ -853,12 +926,6 @@ DRF does not support JWT out of the box (basically, we need to use session authe
     ```
 
 7. Run the migrations
-
-### Setting up the home page
-
-It is not mandatory, but it would be good to have a page that indicates that the API is working. For that, we will create a views.py file in the main folder (positive_api), and will use the api_view decorator from DRF.
-
-Please, refer to the file to see how it was done.
 
 ### Pagination
 
