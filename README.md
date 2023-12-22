@@ -54,7 +54,7 @@ Also, when one writes a negative review, it is very easy to get carried away and
 
 ### Create the project
 
-Start by installing Django (in this case, I used the latest version to date 4.2.7)
+Start by installing Django (in this case, I used the latest long term support version to this date 4.2.7. Also, version 5 proved to have problems with the DRF Authentication)
 
 ```bash
 pip3 install django
@@ -105,7 +105,7 @@ We will be using PostgreSQL for production, so we need to install Psychopg, whic
 pip install psycopg[binary]
 ```
 
-*We are using Django 5, which is already compatible with Psychopg 3.*
+*We are using Django 4.2, which is already compatible with Psychopg 3.*
 
 And, to have our DB connection, we also to tell Django, what is its URL. For that, we need to install the dj-database-url package. This simple Django utility that allows you to utilize the 12factor inspired DATABASE_URL environment variable to configure your Django application.
 
@@ -251,7 +251,28 @@ Now, if we go to the browser, we will see the JSON response.
 
 ### Setting up the authentication
 
-Danjo Rest Framework (DRF) has a built-in authentication system, but we will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework.
+Danjo Rest Framework (DRF) has a built-in authentication system.
+
+The only thing needed is to declare it in the views.py file
+
+```python
+...
+    path('api-auth/', include('rest_framework.urls')),  # Django REST Framework
+...
+```
+
+As you can see, now we have the option to login and logout.
+
+![auth_before](./README_images/auth_before.png)
+
+*Before using the authentication*
+
+![auth_after](./README_images/auth_after.png)
+
+*After using the authentication*
+
+
+But we will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework, but gives way more possibilities, like social authentication, and the use of JWT (JSON Web Token) -which I will cover later-.
 
 To install dj-rest-auth, we need to run the following command:
 
@@ -270,6 +291,8 @@ INSTALLED_APPS = [
 ]
 ```
 
+authtoken is needed, as dj-rest-auth uses it (csrf token based) instead of the default Django authentication, which is session based.
+
 Then, we need to add the following lines to the urls.py file
 
 ```python
@@ -286,9 +309,13 @@ Now, we need to migrate the DB
 python3 manage.py migrate
 ```
 
+We will get back to this later. I just did it now, so I can have all the authentication setup before I start creating the apps.
 
+### Setting up the media files
 
-We are going to use CLOUDINARY to store the images of the users. So, we need to install the cloudinary package
+Some of the apps will use images and heroku does not allow image storage. Also, storing them in a DB is not a good idea (structure -we are using a relational DB-, resources, etc.). Therefore, the best option is to store the images in a cloud service provider, in this case Cloudinary
+
+We need then to install the cloudinary package
 
 ```bash
 pip install django-cloudinary-storage
@@ -1064,7 +1091,13 @@ pip3 freeze > requirements.txt
 
 ### Solved
 
-#### 1. dj-rest-auth
+#### 1. No logout view in the browsable API
+
+When using the browsable API, there is no logout view. This is because Django 5 has compatibility issues with DRF.
+
+The solution is to downgrade Django to 4.2.7, which is the latest long term support version to this date.
+
+#### 2. dj-rest-auth
 
 (Taken from the [Code Institute DRF](https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/a6250c9e9b284dbf99e53ac8e8b68d3e/0c9a4768eea44c38b06d6474ad21cf75/?child=first) tutorial)
 
@@ -1077,7 +1110,7 @@ Proposed Solution: One way to fix this issue is to have our own logout view, whe
 All fixes are indicated in the code with the comment: # dj-rest-auth bug fix workaround.
 
 
-#### 2. No usage of the access token
+#### 3. No usage of the access token
 
 There was a typo in the setting.py file which made the whole REST_FRAMEWORK  to almost be ignored. The typo was:
 
@@ -1101,7 +1134,7 @@ if 'DEV' not in os.environ:
         ]
 ```
 
-#### 3. TypeError when the model had a media field
+#### 4. TypeError when the model had a media field
 
 When the model had a media field, the following error was raised:
 
@@ -1112,7 +1145,7 @@ TypeError: request got values for both 'fields' and 'body', can only specify one
 The solution was to update Cloudinary to the latest version (1.37.0 at the time of writing this README.md file)
 
 
-#### 4. CSRF Failed: CSRF token missing or incorrect
+#### 5. CSRF Failed: CSRF token missing or incorrect
 
 When trying to create a place using Postman, the following error was raised:
 
