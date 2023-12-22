@@ -54,6 +54,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # Django REST Framework Token Authentication
     'dj_rest_auth',  # dj-rest-auth
+    'django.contrib.sites', 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+
+    # Apps
+
 ]
 
 MIDDLEWARE = [
@@ -64,7 +72,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
+
+SITE_ID = 1
 
 ROOT_URLCONF = 'api_positive.urls'
 

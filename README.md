@@ -276,13 +276,22 @@ As you can see, now we have the option to login and logout.
 
 *After using the authentication*
 
+### JWT Authentication
 
-But we will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework, but gives way more possibilities, like social authentication, and the use of JWT (JSON Web Token) -which I will cover later-.
+We will use JWT Authentication to authenticate users in our API. JWT stands for JSON Web Token, and it is a standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.
+
+But Django does not support JWT out of the box, so we need to install a third party package (OK, more than one...)
+
+ We will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework, but gives way more possibilities, like social authentication, and the use of JWT (JSON Web Token) -for which we need another package-.
+
+As we also need the users to be able to register. For this, we will use the dj-rest-auth\[with_social\] package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework. But, we will not use the social athentications for this project.
+
+More info: [social authentication](https://django-rest-auth.readthedocs.io/en/latest/installation.html#social-authentication)
 
 To install dj-rest-auth, we need to run the following command:
 
 ```bash
-pip install dj-rest-auth
+pip install dj-rest-auth[with_social]
 ```
 
 Then, we need to add the following lines to the settings.py file
@@ -290,13 +299,31 @@ Then, we need to add the following lines to the settings.py file
 ```python
 INSTALLED_APPS = [
     ...
-    'rest_framework.authtoken',
-    'dj_rest_auth',
+    'rest_framework',
+    'rest_framework.authtoken',  # Django REST Framework Token Authentication
+    'dj_rest_auth',  # dj-rest-auth
+    'django.contrib.sites', 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
     ...
 ]
 ```
 
-authtoken is needed, as dj-rest-auth uses it (csrf token based) instead of the default Django authentication, which is session based.
+- authtoken is needed, as dj-rest-auth uses it (csrf token based) instead of the default Django authentication, which is session based.
+- django.contrib.sites is needed for the dj-rest-auth package. It is a framework for managing multiple sites with one Django installation.
+- allauth is needed for the dj-rest-auth package. It is a set of Django applications and Python libraries that attempts to provide a complete authentication system. Basically, dj-rest-auth is built on top of allauth.
+- corsheaders is needed for the dj-rest-auth package. It is a Django App that adds CORS (Cross-Origin Resource Sharing) headers to responses. This allows in-browser requests to your Django application from other origins.
+
+Add the allauth middleware to the MIDDLEWARE in the settings.py file
+
+```python
+MIDDLEWARE = [
+    ...
+    'allauth.account.middleware.AccountMiddleware'
+]
+```
 
 Then, we need to add the following lines to the urls.py file
 
@@ -313,6 +340,76 @@ Now, we need to migrate the DB
 ```bash
 python3 manage.py migrate
 ```
+
+...and add the flag: SITE_ID = 1
+
+(But, why? you may ask. I did too... this post has a very good explanation: https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1). WITHOUT THIS, THE AUTHENTICATION WILL NOT WORK.
+
+
+Then, we need to add the following lines to the urls.py file
+
+```python
+urlpatterns = [
+    ...
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    ...
+]
+```
+
+And, now... FINALLY, the tokens:
+
+```bash
+pip install djangorestframework_simplejwt
+```
+
+DRF does not support JWT out of the box (basically, we need to use session authentication in the development, and JWT for production... yeah, it sucks...), so we need to:
+
+1. Create a DEV variable in the env.py file:
+
+    ```python
+    os.environ['DEV'] = 'True'
+    ```
+
+2. Use that variable to check if we are in development or production:
+
+    ```python
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': [(
+            'rest_framework.authentication.SessionAuthentication'
+            if 'DEV' in os.environ and os.environ['DEV'] == 'True'
+            else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+        )]
+    }
+
+    REST_USE_JWT = True
+    JWT_AUTH_SECURE = True
+    JWT_AUTH_COOKIE = 'jwt-auth'
+    JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-auth'
+    ```
+
+3. Create a serializers.py file in the project folder (positive_api).
+
+4. Modify the settings.py file adding:
+
+    ```python
+    REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'positive_api.serializers.CurrentUserDetailSerializer'
+    }
+    ```
+5. allauth.account.middleware.AccountMiddleware must be added to settings.MIDDLEWARE
+
+6. Add the following lines to the urls.py file
+
+    ```python
+    MIDDLEWARE = [
+    ...
+    'allauth.account.middleware.AccountMiddleware',
+    ...]
+    ```
+
+7. Run the migrations
+
+
 
 We will get back to this later. I just did it now, so I can have all the authentication setup before I start creating the apps.
 
@@ -417,6 +514,11 @@ the ERD is how we will structure our DB. In other words, the relationship betwee
 ### Profiles app
 
 This app will be used to manage the users of the Positive Social Network. We will use the default Django User model, but we will add some extra fields to it.
+
+The profile will be automatically created when a user is created. We accomplish this by using signals, which are pieces of code that are executed when a certain action is performed or there is an event. In this case, we will use [post_save](https://docs.djangoproject.com/en/4.2/ref/signals/#post-save), which is executed after a model is saved, in this case, the User model (yes, we didn't create it, but it is already part of Django -so, it exists *wink wink*).
+
+
+Also, we will use DRF's generic views, which are a set of already created views that we can use to create, update, delete, etc. our models.
 
 Then, we need to add the app to the INSTALLED_APPS in the settings.py file
 
@@ -836,132 +938,6 @@ VACUUM;
 ---
 
 ## Deployment
-
-### JWT Authentication
-
-We will use JWT Authentication to authenticate users in our API. JWT stands for JSON Web Token, and it is a standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.
-
-To install JWT Authentication, we need to run the following command:
-
-```bash
-pip install dj-rest-auth
-```
-
-Then, we need to add the following lines to the settings.py file
-
-```python
-INSTALLED_APPS = [
-    ...
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    ...
-]
-```
-
-Then, we need to add the following lines to the urls.py file
-
-```python
-urlpatterns = [
-    ...
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    ...
-]
-```
-
-Now, we need to migrate the DB
-
-```bash
-python3 manage.py migrate
-```
-
-But, we also need the users to be able to register. For this, we will use the dj-rest-auth package, which is a set of REST API endpoints for authentication. It is built on top of Django REST Framework.
-
-To install dj-rest-auth, we need to run the following command:
-
-```bash
-pip install dj-rest-auth[with_social]
-```
-
-Then, we need to add the following lines to the settings.py file
-
-```python
-INSTALLED_APPS = [
-    ...
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
-    ...
-]
-```
-
-...and add the flag: SITE_ID = 1
-
-(But, why? you may ask. I did too... this post has a very good explanation: https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1)
-
-Then, we need to add the following lines to the urls.py file
-
-```python
-urlpatterns = [
-    ...
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    ...
-]
-```
-
-And, now... FINALLY, the tokens:
-
-```bash
-pip install djangorestframework_simplejwt
-```
-
-DRF does not support JWT out of the box (basically, we need to use session authentication in the development, and JWT for production... yeah, it sucks...), so we need to:
-
-1. Create a DEV variable in the env.py file:
-
-    ```python
-    os.environ['DEV'] = 'True'
-    ```
-
-2. Use that variable to check if we are in development or production:
-
-    ```python
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': [(
-            'rest_framework.authentication.SessionAuthentication'
-            if 'DEV' in os.environ and os.environ['DEV'] == 'True'
-            else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-        )]
-    }
-
-    REST_USE_JWT = True
-    JWT_AUTH_SECURE = True
-    JWT_AUTH_COOKIE = 'jwt-auth'
-    JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-auth'
-    ```
-
-3. Create a serializers.py file in the project folder (positive_api).
-
-4. Modify the settings.py file adding:
-
-    ```python
-    REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'positive_api.serializers.CurrentUserDetailSerializer'
-    }
-    ```
-5. allauth.account.middleware.AccountMiddleware must be added to settings.MIDDLEWARE
-
-6. Add the following lines to the urls.py file
-
-    ```python
-    MIDDLEWARE = [
-    ...
-    'allauth.account.middleware.AccountMiddleware',
-    ...]
-    ```
-
-7. Run the migrations
 
 ### Pagination
 
