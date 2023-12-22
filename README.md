@@ -20,26 +20,31 @@ This is the Positive Social Network API, a project for the Code Institute Full S
 
 - [Introduction](#introduction)
 - [Basic configuration](#basic-configuration)
+  - [Create the project](#create-the-project)
+  - [Setup the DB](#setup-the-db)
+  - [Create the superuser](#create-the-superuser)
 - [Creating the apps](#creating-the-apps)
+    - [Setting up the home page](#setting-up-the-home-page)
+    - [Setting up the authentication](#setting-up-the-authentication)
+    - [Setting up the media files](#setting-up-the-media-files)
 - [Entities Relationship Diagram (ERD)](#entities-relationship-diagram-erd)
-- [Profiles app](#profiles-app)
-  - [Serializers](#serializers)
-  - [Permissions](#permissions)
-- [Places app](#places-app)
-- [Posts app](#posts-app)
-- [Likes app](#likes-app)
-    - [Likes usage in other views](#likes-usage-in-other-views)
+    - [Profiles app](#profiles-app)
+        - [Serializers](#serializers)
+        - [Permissions](#permissions)
+    - [Places app](#places-app)
+        - [Adding django-cities-light to the project](#adding-django-cities-light-to-the-project)
+    - [Posts app](#posts-app)
+    - [Likes app](#likes-app)
+        - [Adding django-cities-light to the project](#adding-django-cities-light-to-the-project-1)
 - [Deployment](#deployment)
     - [JWT Authentication](#jwt-authentication)
-    - [Setting up the home page](#setting-up-the-home-page)
     - [Pagination](#pagination)
     - [json as render format](#json-as-render-format)
     - [Heroku](#heroku)
 - [Bugs](#bugs)
     - [Solved](#solved)
-        - [1. dj-rest-auth](#1-dj-rest-auth)
-        - [2. No usage of the access token](#2-no-usage-of-the-access-token)
-        - [3. TypeError when the model had a media field](#3-typeerror-when-the-model-had-a-media-field)
+    - [Unsolved](#unsolved)
+- [Credits](#credits)
 
 ## Introduction
 
@@ -195,7 +200,7 @@ Then, run the server
 python3 manage.py runserver
 ```
 
-## Creating the apps
+## Django Rest Framework (DRF) setup
 
 OK. Until here we have our Django project created, and we have our DB setup. Now, we need to create the apps that we will use in our project.
 
@@ -369,6 +374,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 The MEDIA_URL is the URL where the images will be stored by Django. In this case, we will use the default one, which is /media/
 
+## Creating the apps
 
 Now, we need to create the apps that we will use in our project. In this case, we will create the following apps:
 
@@ -398,11 +404,14 @@ Then, we need to add the app to the INSTALLED_APPS in the settings.py file
     ...
 ```
 
-## Entities Relationship Diagram (ERD)
+### Entities Relationship Diagram (ERD)
+
+the ERD is how we will structure our DB. In other words, the relationship between each app. In this case, we will have the following models:
 
 ![ERD](./README_images/erd.png)
 
-**NOTE:** The Country and City models are created by the ![django-cities-light](https://pypi.org/project/django-cities-light/) package.
+**NOTE 1:** The Country and City models are created by the ![django-cities-light](https://pypi.org/project/django-cities-light/) package.
+**NOTE 2:** After testing it, it was decided not to use django-cities-light. It took too much space in the DB, and we are using a free tier that only allows 20MB. So, we will use a third party API to get the cities and countries, called
 
 
 ### Profiles app
@@ -990,7 +999,7 @@ So, for this project, we are using ElephantSQL, which is a PostgreSQL database h
 Then, install the following packages:
 
 ```bash
-pip3 install dj_database_url psycopg2
+pip3 install dj_database_url psycopg
 ```
 
 Then, we need to add the following lines to the settings.py file

@@ -30,6 +30,13 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.herokuapp.com",
 ]
 
+# Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+}
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Application definition
 
@@ -39,8 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'rest_framework',  # Django REST Framework
+    'cloudinary',
+
+    # Django REST Framework
+    'rest_framework',
     'rest_framework.authtoken',  # Django REST Framework Token Authentication
     'dj_rest_auth',  # dj-rest-auth
 ]
