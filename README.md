@@ -367,51 +367,135 @@ DRF does not support JWT out of the box (basically, we need to use session authe
 1. Create a DEV variable in the env.py file:
 
     ```python
-    os.environ['DEV'] = 'True'
+    os.environ['SESS_AUTH'] = 'True'
     ```
 
 2. Use that variable to check if we are in development or production:
 
-    ```python
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': [(
-            'rest_framework.authentication.SessionAuthentication'
-            if 'DEV' in os.environ and os.environ['DEV'] == 'True'
-            else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-        )]
-    }
-
-    REST_USE_JWT = True
-    JWT_AUTH_SECURE = True
-    JWT_AUTH_COOKIE = 'jwt-auth'
-    JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-auth'
-    ```
-
-3. Create a serializers.py file in the project folder (positive_api).
-
-4. Modify the settings.py file adding:
-
-    ```python
-    REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'positive_api.serializers.CurrentUserDetailSerializer'
-    }
-    ```
-5. allauth.account.middleware.AccountMiddleware must be added to settings.MIDDLEWARE
-
-6. Add the following lines to the urls.py file
-
-    ```python
-    MIDDLEWARE = [
-    ...
-    'allauth.account.middleware.AccountMiddleware',
-    ...]
-    ```
-
-7. Run the migrations
+*NOTE: * Please, bear with me here. I will setup the pagination and timeformat in the settings.py file, but I will not explain it here. I will do it later, when I create the apps. I am using this, only to be able to setup the REST_FRAMEWORK variable/dictionary, so I can use the JWT authentication.
 
 
+```python
+REST_FRAMEWORK = {
+    # Pagination
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # Date and time formats
+    'DATETIME_FORMAT': "%Y-%m-%d at %-I:%M %p",
+}
 
-We will get back to this later. I just did it now, so I can have all the authentication setup before I start creating the apps.
+
+# Authentication: JWT in production, Session in development
+if 'SESS_AUTH' in os.environ and os.environ.get('SESS_AUTH') == 'True':
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+            'rest_framework.authentication.SessionAuthentication',
+        ]
+else:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ]
+```
+
+And, then the Rest Authenticantion flags:
+
+```python
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'positive-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
+}
+```
+
+Here, I am just tell Django to use JWT, and the name of the cookies that will be used.
+
+Let's test it: run the server
+
+```bash
+python3 manage.py runserver
+```
+
+And, go to the browser. You should be able to login and logout.
+
+![api_positive_auth](./README_images/api_positive_auth.gif)
+
+Now, let's test that we are really using JWT. For that, we will use another tool, called ![Postman](https://www.postman.com/). Postman is a collaboration platform for API development. It is a very powerful tool, and it is free.
+
+The basic Postman setup is as follows:
+
+Create a new collection and setup the following variables:
+
+![Postman variables](./README_images/postman_conf_collect_vars.png)
+
+Then, create a new GET request for the home page (root). You should be able to see the welcome message and the JSON that we setup before.
+
+![Postman root](./README_images/postman_root.gif)
+
+Now, let's create a POST for login. For that, we need to add the basic authentication and expect to receive the three token: access, refresh and csrf.
+
+*NOTE: * If you set the authentication in the the Postman panel, it will automatically added to the body of the request. You can even do it yourself, or even add it as a JSON. Feel free to check the documentation of Postman to learn more about it.
+
+![Postman login](./README_images/postman_login.gif)
+
+Be aware that dj-rest-auth is not sending the csrf token nor the refresh token in the body of the response, but in the cookies. So, in case that we need them in it, we need to set dj-rest-auth to do it. More info in the official documentation: [dj-rest-auth](https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#cookies).
+
+And, lastly, let's create a POST for logout. For that, we need to add the basic authentication and expect to receive a 204 response.
+
+Postman will automatically put the CSRF token in the header of the request, so we don't need to do it manually. But, our end-point is expecting a X-CSRFToken in the header (whihc is just the same, but needs to be declared as so), so we need to add it manually.
+
+To get the tokens out of the cookies, so we do not need to copy and paste them everytime, we can create a simple script in the login tests like this one:
+
+```javascript
+var jsonData = pm.response.json();
+pm.collectionVariables.set("access_token", jsonData.access_token);
+pm.collectionVariables.set("refresh_token", jsonData.refresh_token);
+
+var cookies = pm.cookies.all();
+for (var i = 0; i < cookies.length; i++) {
+   if (cookies[i].name === 'csrftoken') {
+       pm.collectionVariables.set("csrfToken", cookies[i].value);
+       break;
+   }
+}
+
+console.log('access token: ', pm.collectionVariables.get("access_token"));
+console.log('refresh token: ', pm.collectionVariables.get("refresh_token"));
+console.log('csrf token: ', pm.collectionVariables.get("csrfToken"));
+```
+
+![Postman logout](./README_images/postman_logout.gif)
+
+As it can be seen, the logout process has already deleted the access and refresh tokens from the cookies.
+
+Be aware that, for JWT, which we will test when we are set in Heorku, we will need to manually add the access token in the header of the request.
+
+### Test deployment
+
+Now, we need to test that everything is working as expected in Heroku. For that, we need to create a new app in Heroku, and link it to our GitHub repository.
+
+Then, we need to add the following variables to the Config Vars in Heroku:
+
+![Heroku Initial Config Vars](./README_images/heroku_initial_config_vars.png)
+
+*NOTE: * Remember to create the requirements.txt and the Procfile (with capo¡ital F) files, as explained in my previous project, The WC.
+
+After the deployment, you should be able to see the home page of the API.
+
+![Heroku html home page](./README_images/heroku_home_html.png)
+
+But, we do not need an html home page, we need a JSON response. For that, we need to add the following lines to the settings.py file.
+Also, in Heroku is very difficult to setup a browsable API, so we will disable it (we-do-not-need-it... anyway).
+
+```python
+# JSON and html renderer only in development
+if 'HTML_REND' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+            'rest_framework.renderers.JSONRenderer',
+        ]
+```
+
+This means, that if we want to have the browsable API, we need to add the HTML_REND variable to the Config Vars in Heroku (advice: do not set it... once again, we-do-not-need-it, and working with the static files to render the HTML styles is not straightforward).
+
 
 ### Setting up the media files
 

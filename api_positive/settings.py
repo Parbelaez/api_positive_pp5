@@ -119,12 +119,6 @@ else:
 
 # Django REST Framework
 
-REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_COOKIE': 'positive-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
-}
-
 REST_FRAMEWORK = {
     # Pagination
     'DEFAULT_PAGINATION_CLASS':
@@ -143,6 +137,18 @@ if 'SESS_AUTH' in os.environ and os.environ.get('SESS_AUTH') == 'True':
 else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
             'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ]
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'positive-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
+}
+
+# JSON and html renderer only in development
+if 'HTML_REND' not in os.environ or os.environ.get('HTML_REND') != 'True':
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+            'rest_framework.renderers.JSONRenderer',
         ]
 
 # Password validation
