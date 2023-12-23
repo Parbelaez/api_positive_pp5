@@ -13,10 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-88s0dgyx6nv&*==as*s@g6a@&wjewn)71vkh2&guxd6w+i0h&2'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -36,7 +36,6 @@ CLOUDINARY_STORAGE = {
 }
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 
 # Application definition
 
@@ -117,12 +116,32 @@ else:
     print('connected to postgres')
 
 # Django REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ],
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'positive-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
 }
+
+REST_FRAMEWORK = {
+    # Pagination
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # Date and time formats
+    'DATETIME_FORMAT': "%Y-%m-%d at %-I:%M %p",
+}
+
+
+# Authentication: JWT in production, Session in development
+if 'SESS_AUTH' in os.environ and os.environ.get('SESS_AUTH') == 'True':
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+            'rest_framework.authentication.SessionAuthentication',
+        ]
+else:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -164,3 +183,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print(REST_FRAMEWORK)

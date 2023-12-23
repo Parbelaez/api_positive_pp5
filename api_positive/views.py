@@ -13,5 +13,5 @@ def root_route(request):
         'message': 'Welcome to the Positive API',
         'version': '1.0.0',
         'author': 'Paulo Arbeláez',
-        'Release': '20231221.2151',
+        'Release': '20231223.1141',
     })
