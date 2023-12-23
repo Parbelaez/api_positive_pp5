@@ -6,13 +6,12 @@ Welcome,
 
 This is the Positive Social Network API, a project for the Code Institute Full Stack Software Development Diploma.
 
-[View Postive on Heroku](https://thewcwebpage-83a6428384c3.herokuapp.com)
+[View Postive on Heroku](https://api-positive-a53d71b6a573.herokuapp.com/)
 
-![GitHub last commit](https://img.shields.io/github/last-commit/parbelaez/pp5_positive_api?color=red)
-![GitHub contributors](https://img.shields.io/github/contributors/parbelaez/pp5_positive_api?color=orange)
-![GitHub language count](https://img.shields.io/github/languages/count/parbelaez/pp5_positive_api?color=yellow)
-![GitHub top language](https://img.shields.io/github/languages/top/parbelaez/pp5_positive_api?color=green)
-![W3C Validation](https://img.shields.io/w3c-validation/html?color=blueviolet&targetUrl=https://thewcwebpage-83a6428384c3.herokuapp.com)
+![GitHub last commit](https://img.shields.io/github/last-commit/parbelaez/api_positive_pp5?color=red)
+![GitHub contributors](https://img.shields.io/github/contributors/parbelaez/api_positive_pp5?color=orange)
+![GitHub language count](https://img.shields.io/github/languages/count/parbelaez/api_positive_pp5?color=yellow)
+![GitHub top language](https://img.shields.io/github/languages/top/parbelaez/api_positive_pp5?color=green)
 
 ---
 
@@ -496,8 +495,39 @@ if 'HTML_REND' not in os.environ:
 
 This means, that if we want to have the browsable API, we need to add the HTML_REND variable to the Config Vars in Heroku (advice: do not set it... once again, we-do-not-need-it, and working with the static files to render the HTML styles is not straightforward).
 
+After this, LOOK HOW BEAUTIFUL OUR API IS:
+
+![Heroku JSON home page](./README_images/heroku_home_json.png)
+
+OK, now, let's test the authentication. We will do the same thing as before, but now, we will use the Heroku URL and we will use the JWT token for the authentication.
+
+So, first, we need to use Heroku's URL in the Postman collection variables:
+
+![Postman variables](./README_images/postman_herolu_setup.png)
+
+Then, the root:
+
+![Postman root](./README_images/postman_heroku_home.png)
+
+Then, the login:
+
+![Postman login](./README_images/postman_heroku_login.png)
+
+As you can see, all cookies (csrf, access and refresh) are set in the response:
+
+![Postman login cookies](./README_images/postman_heroku_cookies.png)
+
+Then, the logout:
+
+![Postman logout](./README_images/postman_heroku_logout.png)
+
+And, as you can see, the cookies are deleted from the response:
+
+![Postman logout cookies](./README_images/postman_heroku_no_cookies.png)
 
 ### Setting up the media files
+
+Yes, I know you are eager to know about the apps and all of that, but, let's better prepare E-VERY-THING before getting into the interesting part (yes, all this setup is booooring... but, neeeeeded -and mandatory-).
 
 Some of the apps will use images and heroku does not allow image storage. Also, storing them in a DB is not a good idea (structure -we are using a relational DB-, resources, etc.). Therefore, the best option is to store the images in a cloud service provider, in this case Cloudinary
 
