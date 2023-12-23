@@ -53,11 +53,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # Django REST Framework Token Authentication
     'dj_rest_auth',  # dj-rest-auth
+    # Registration
     'django.contrib.sites', 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    # CORS
     'corsheaders',
 
     # Apps

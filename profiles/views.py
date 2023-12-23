@@ -1,6 +1,7 @@
 from rest_framework import generics, filters
 from .models import Profile
 from .serializers import ProfileSerializer
+from rest_framework.permissions import IsAuthenticated
 from api_positive.permissions import IsOwnerOrReadOnly
 # from  django.db.models import Count
 
@@ -16,6 +17,7 @@ class ProfileList(generics.ListAPIView):
     No create view ass porodile creation is handled by django signals
     """
     serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all().order_by('-created_at')
     
         #                         annotate(
