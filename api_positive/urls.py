@@ -13,7 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Django REST Framework
     path('api-auth/', include('rest_framework.urls')),
-     # dj-rest-auth for login and logout
+    # dj-rest-auth for login and logout
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     # dj-rest-auth for registration
     path(

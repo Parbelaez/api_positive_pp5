@@ -330,6 +330,7 @@ Then, we need to add the following lines to the urls.py file
 urlpatterns = [
     ...
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     ...
 ]
 ```
@@ -343,17 +344,6 @@ python3 manage.py migrate
 ...and add the flag: SITE_ID = 1
 
 (But, why? you may ask. I did too... this post has a very good explanation: https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1). WITHOUT THIS, THE AUTHENTICATION WILL NOT WORK.
-
-
-Then, we need to add the following lines to the urls.py file
-
-```python
-urlpatterns = [
-    ...
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    ...
-]
-```
 
 And, now... FINALLY, the tokens:
 
@@ -465,6 +455,21 @@ console.log('csrf token: ', pm.collectionVariables.get("csrfToken"));
 ![Postman logout](./README_images/postman_logout.gif)
 
 As it can be seen, the logout process has already deleted the access and refresh tokens from the cookies.
+
+Now, let's register:
+
+First, expose your port, unlesss, you will not be able to register from somewhere else than your local machine (browsable API).
+
+![Open Port](./README_images/open_port.png)
+
+Then, create a new POST request for the registration. In this case, you need to create a form with the following fields:
+
+- username
+- email
+- password1
+- password2 (this is just to confirm the password)
+
+![Postman register](./README_images/postman_register.gif)
 
 Be aware that, for JWT, which we will test when we are set in Heorku, we will need to manually add the access token in the header of the request.
 

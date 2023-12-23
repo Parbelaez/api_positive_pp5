@@ -146,7 +146,19 @@ REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'positive-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
+    'JWT_AUTH_SAMESITE': 'None',
 }
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
+}
+
+CORS_ALLOW_CREDENTIALS = True
+
+# We need to disable the email verification in order to be able to create users from the API
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
 
 # JSON and html renderer only in development
 if 'HTML_REND' not in os.environ or os.environ.get('HTML_REND') != 'True':
