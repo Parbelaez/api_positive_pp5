@@ -678,6 +678,8 @@ Now we have a Profile working model with images.
 
 ![Profile model](./README_images/profiles_anim.gif)
 
+But, we also want that only the owner of the profile can edit it. For that, we need to add permissions to the profiles app. Permissions are rules that define who can access what in our API. For example, we don't want that a user can delete or edit another user's profile.
+
 #### Serializers
 
 After creating the views and the urls, we will recieve the folowing error:
