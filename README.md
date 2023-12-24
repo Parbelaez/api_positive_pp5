@@ -442,21 +442,24 @@ Postman will automatically put the CSRF token in the header of the request, so w
 To get the tokens out of the cookies, so we do not need to copy and paste them everytime, we can create a simple script in the login tests like this one:
 
 ```javascript
-var jsonData = pm.response.json();
-pm.collectionVariables.set("access_token", jsonData.access_token);
-pm.collectionVariables.set("refresh_token", jsonData.refresh_token);
-
 var cookies = pm.cookies.all();
 for (var i = 0; i < cookies.length; i++) {
-   if (cookies[i].name === 'csrftoken') {
-       pm.collectionVariables.set("csrfToken", cookies[i].value);
-       break;
-   }
+    switch(cookies[i].name){
+        case 'csrftoken':
+           pm.collectionVariables.set("csrfToken", cookies[i].value);
+           break;
+        case 'positive-auth':
+           pm.collectionVariables.set("access_token", cookies[i].value);
+           break; 
+        case 'positive-refresh-token':
+           pm.collectionVariables.set("refresh_token", cookies[i].value);
+           break;
+    }
 }
 
-console.log('access token: ', pm.collectionVariables.get("access_token"));
-console.log('refresh token: ', pm.collectionVariables.get("refresh_token"));
-console.log('csrf token: ', pm.collectionVariables.get("csrfToken"));
+console.log('access_token: ', pm.collectionVariables.get("access_token"));
+console.log('refresh_token: ', pm.collectionVariables.get("refresh_token"));
+console.log('csrfToken: ', pm.collectionVariables.get("csrfToken"));
 ```
 
 ![Postman logout](./README_images/postman_logout.gif)
