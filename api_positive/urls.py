@@ -26,4 +26,5 @@ urlpatterns = [
 
     # Apps
     path('profiles/', include('profiles.urls')),
+    path('places/', include('places.urls')),
 ]

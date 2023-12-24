@@ -315,6 +315,10 @@ INSTALLED_APPS = [
 - allauth is needed for the dj-rest-auth package. It is a set of Django applications and Python libraries that attempts to provide a complete authentication system. Basically, dj-rest-auth is built on top of allauth.
 - corsheaders is needed for the dj-rest-auth package. It is a Django App that adds CORS (Cross-Origin Resource Sharing) headers to responses. This allows in-browser requests to your Django application from other origins.
 
+*Brief CORS explanation: *
+
+[![YouTube video](https://img.youtube.com/vi/4KHiSt0oLJ0/0.jpg)](https://www.youtube.com/watch?v=4KHiSt0oLJ0)
+
 Add the allauth middleware to the MIDDLEWARE in the settings.py file
 
 ```python
@@ -508,7 +512,7 @@ OK, now, let's test the authentication. We will do the same thing as before, but
 
 So, first, we need to use Heroku's URL in the Postman collection variables:
 
-![Postman variables](./README_images/postman_herolu_setup.png)
+![Postman variables](./README_images/postman_heroku_setup.png)
 
 Then, the root:
 
