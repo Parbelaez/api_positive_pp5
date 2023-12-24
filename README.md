@@ -22,28 +22,31 @@ This is the Positive Social Network API, a project for the Code Institute Full S
   - [Create the project](#create-the-project)
   - [Setup the DB](#setup-the-db)
   - [Create the superuser](#create-the-superuser)
-- [Creating the apps](#creating-the-apps)
+- [Django Rest Framework (DRF) setup](#django-rest-framework-drf-setup)
     - [Setting up the home page](#setting-up-the-home-page)
     - [Setting up the authentication](#setting-up-the-authentication)
+    - [JWT Authentication](#jwt-authentication)
+    - [Test deployment](#test-deployment)
     - [Setting up the media files](#setting-up-the-media-files)
-- [Entities Relationship Diagram (ERD)](#entities-relationship-diagram-erd)
+- [Creating the apps](#creating-the-apps)
+    - [Entities Relationship Diagram (ERD)](#entities-relationship-diagram-erd)
     - [Profiles app](#profiles-app)
         - [Serializers](#serializers)
         - [Permissions](#permissions)
     - [Places app](#places-app)
         - [Adding django-cities-light to the project](#adding-django-cities-light-to-the-project)
     - [Posts app](#posts-app)
+    - [Comments app](#comments-app)
     - [Likes app](#likes-app)
-        - [Adding django-cities-light to the project](#adding-django-cities-light-to-the-project-1)
+- [Testing](#testing)
 - [Deployment](#deployment)
-    - [JWT Authentication](#jwt-authentication)
     - [Pagination](#pagination)
-    - [json as render format](#json-as-render-format)
+    - [JSON as render format](#json-as-render-format)
     - [Heroku](#heroku)
 - [Bugs](#bugs)
-    - [Solved](#solved)
-    - [Unsolved](#unsolved)
-- [Credits](#credits)
+    - [Solved](#Solved)
+    - [Unsolved](#Unsolved)
+
 
 ## Introduction
 
@@ -1079,7 +1082,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-### json as render format
+### JSON as render format
 
 We only need the html format for development, but we need the json format for production. So, we need to add the following lines to the settings.py file
 
