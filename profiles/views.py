@@ -3,7 +3,7 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from rest_framework.permissions import IsAuthenticated
 from api_positive.permissions import IsOwnerOrReadOnly
-# from  django.db.models import Count
+from  django.db.models import Count
 
 # We have refactored this part of the code to use generics
 # not only because it is shorter, but also because it is more
@@ -18,12 +18,10 @@ class ProfileList(generics.ListAPIView):
     """
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Profile.objects.all().order_by('-created_at')
-    
-        #                         annotate(
-        # num_posts=Count('owner__post', distinct=True),
-        # num_places=Count('owner__place', distinct=True)
-        # ).order_by('-created_at')
+    queryset = Profile.objects.all().annotate(
+        num_posts=Count('owner__post', distinct=True),
+        num_places=Count('owner__place', distinct=True)
+        ).order_by('-created_at')
     filter_backends = [filters.OrderingFilter]
     # ordering_fields = ['num_posts', 'num_places']
 
@@ -33,9 +31,7 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     """
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    queryset = Profile.objects.all()
-    
-    #                             annotate(
-    #     num_posts=Count('owner__post', distinct=True),
-    #     num_places=Count('owner__place', distinct=True)
-    # ).order_by('-created_at')
+    queryset = Profile.objects.annotate(
+        num_posts=Count('owner__post', distinct=True),
+        num_places=Count('owner__place', distinct=True)
+    ).order_by('-created_at')

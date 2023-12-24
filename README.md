@@ -972,9 +972,7 @@ RetrieveUpdateDestroyAPIView is a generic view that provides GET (retrieve), PUT
 
 Therefore, there is no need to create the methods as before.
 
-**_NOTE 1:_** some views were left as they are (no refactoring), because they are intended to be a sample of the different ways to create views.
-
-**_NOTE 2:_** the places view was created after the posts and likes views, therefore, it was not stated in this README.md that we used generics.
+**_NOTE:_** the places view was created after the posts and likes views, therefore, it was not stated in this README.md that we used generics. All the views were refactored to use generics.
 
 #### Likes usage in other views
 

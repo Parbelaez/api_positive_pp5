@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post
-# from likes.models import Likes
+from likes.models import Likes
 from datetime import datetime
 
 
@@ -11,10 +11,10 @@ class PostSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     # We will use the Method Field to realte if the logged user has liked
     # the post or not, and the type of like
-    # !like_type = serializers.SerializerMethodField()
-    # !num_tops = serializers.ReadOnlyField()
-    # !num_likes = serializers.ReadOnlyField()
-    # !num_dislikes = serializers.ReadOnlyField()
+    like_type = serializers.SerializerMethodField()
+    num_tops = serializers.ReadOnlyField()
+    num_likes = serializers.ReadOnlyField()
+    num_dislikes = serializers.ReadOnlyField()
 
     # To optimize the resources usage, we need to set some image validations
     # to avoid sending the image to cloudinary if it is not compliant with
@@ -58,14 +58,14 @@ class PostSerializer(serializers.ModelSerializer):
 
     # We need to define the get_like_id method to be able to access the
     # like_id field in the serializer
-    # !def get_like_type(self, obj):
-    #     user = self.context['request'].user
-    #     if user.is_authenticated:
-    #         like = Likes.objects.filter(
-    #             owner=user, post=obj
-    #         ).first()
-    #         return like.like_type if like else None
-    #     return None
+    def get_like_type(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            like = Likes.objects.filter(
+                owner=user, post=obj
+            ).first()
+            return like.like_type if like else None
+        return None
 
     class Meta: 
         model = Post
@@ -87,9 +87,9 @@ class PostSerializer(serializers.ModelSerializer):
             'image_filter',
             'recommendation',
             # Type of like that the logged user has given to the post
-            # !'like_type',
+            'like_type',
             # Count of like_types
-            # !'num_tops',
-            # 'num_likes',
-            # 'num_dislikes',
+            'num_tops',
+            'num_likes',
+            'num_dislikes',
         ]

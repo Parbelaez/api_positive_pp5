@@ -15,23 +15,21 @@ class PostList(generics.ListCreateAPIView):
     authentication = authentication.TokenAuthentication
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Post.objects.all().order_by('-created_at')
-    
-    # annotate(
-    #     # In previous versions of Django, we would have to use the
-    #     #Case When statement. After Django 3.2, we can use the Count
-    #     #function with the filter parameter to count the number of
-    #     #likes of each type.
-    #     num_tops=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='top')
-    #         ),
-    #     num_likes=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='like')
-    #         ),
-    #     num_dislikes=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='dislike')
-    #         )
-    # ).order_by('-created_at')
+    queryset = Post.objects.all().annotate(
+        # In previous versions of Django, we would have to use the
+        #Case When statement. After Django 3.2, we can use the Count
+        #function with the filter parameter to count the number of
+        #likes of each type.
+        num_tops=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='top')
+            ),
+        num_likes=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='like')
+            ),
+        num_dislikes=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='dislike')
+            )
+    ).order_by('-created_at')
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['post_place__place_name', 'post_place__city']
@@ -47,18 +45,16 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     Retrieve, update or delete a post instance when authenticated and owner.
     """
     permission_classes = [IsOwnerOrReadOnly]
-    queryset = Post.objects.all().order_by('-created_at')
-    
-    # annotate(
-    #     num_tops=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='top')
-    #         ),
-    #     num_likes=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='like')
-    #         ),
-    #     num_dislikes=Count('post_likes__like_type',
-    #         filter=Q(post_likes__like_type='dislike')
-    #         )
-    # ).order_by('-created_at')
+    queryset = Post.objects.annotate(
+        num_tops=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='top')
+            ),
+        num_likes=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='like')
+            ),
+        num_dislikes=Count('post_likes__like_type',
+            filter=Q(post_likes__like_type='dislike')
+            )
+    ).order_by('-created_at')
     serializer_class = PostSerializer
 
