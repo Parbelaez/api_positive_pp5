@@ -11,6 +11,7 @@ class PostSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     # We will use the Method Field to realte if the logged user has liked
     # the post or not, and the type of like
+    like_id = serializers.SerializerMethodField()
     like_type = serializers.SerializerMethodField()
     num_tops = serializers.ReadOnlyField()
     num_likes = serializers.ReadOnlyField()
@@ -58,6 +59,17 @@ class PostSerializer(serializers.ModelSerializer):
 
     # We need to define the get_like_id method to be able to access the
     # like_id field in the serializer
+    def get_like_id(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            like = Like.objects.filter(
+                owner=user, post=obj
+            ).first()
+            return like.id if like else None
+        return None
+
+    # We need to define the get_like_id method to be able to access the
+    # like_id field in the serializer
     def get_like_type(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
@@ -86,6 +98,7 @@ class PostSerializer(serializers.ModelSerializer):
             'image',
             'image_filter',
             'recommendation',
+            'like_id',
             # Type of like that the logged user has given to the post
             'like_type',
             # Count of like_types
