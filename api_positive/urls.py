@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from .views import root_route
 # JWT Token Authentication
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
@@ -21,8 +21,8 @@ urlpatterns = [
     ),
 
     # JWT Token Authentication
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Apps
     path('profiles/', include('profiles.urls')),
