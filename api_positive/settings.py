@@ -151,9 +151,9 @@ REST_AUTH = {
     'JWT_AUTH_SECURE': True,
     'JWT_AUTH_COOKIE': 'positive-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
-    # We need this flag set to false to have the refresh token in the body
+    # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
+    # 'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_SAMESITE': 'None',
 }
 
