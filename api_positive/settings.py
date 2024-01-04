@@ -148,7 +148,7 @@ else:
 
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_SECURE' = True
+    'JWT_AUTH_SECURE' = True,
     'JWT_AUTH_COOKIE': 'positive-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # We need this flag set to false to have the refresh token in the body
