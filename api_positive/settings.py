@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     # Django REST Framework
     'rest_framework',
     'rest_framework.authtoken',  # Django REST Framework Token Authentication
-    'dj_rest_auth',  # dj-rest-auth
+    'dj_rest_auth',
     # Registration
     'django.contrib.sites', 
     'allauth',
@@ -152,7 +152,7 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # We need this flag set to false to have the refresh token in the body
     # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
+    'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_SAMESITE': 'None',
 }
 
