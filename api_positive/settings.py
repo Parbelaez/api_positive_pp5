@@ -155,7 +155,7 @@ REST_AUTH = {
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
-    'JWT_AUTH_COOKIE_DOMAIN' : ['gitpod.io', 'herokuapp.com'],
+    'JWT_AUTH_COOKIE_DOMAIN' : ['.gitpod.io', '.herokuapp.com'],
 }
 
 REST_AUTH_SERIALIZERS = {
