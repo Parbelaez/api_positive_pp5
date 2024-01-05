@@ -153,8 +153,8 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_SAMESITE': 'None',
+    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'Lax',
     'JWT_AUTH_COOKIE_DOMAIN' : ['.gitpod.io', '.herokuapp.com'],
 }
 
