@@ -146,17 +146,11 @@ else:
             'rest_framework_simplejwt.authentication.JWTAuthentication',
         ]
 
-REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_SECURE': True,
-    'JWT_AUTH_COOKIE': 'positive-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
-    # When this flag is set to false, the refresh token will be sent in the body
-    # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': True,
-    'JWT_AUTH_SAMESITE': 'Lax',
-    'JWT_AUTH_COOKIE_DOMAIN' : ['.gitpod.io', '.herokuapp.com'],
-}
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
