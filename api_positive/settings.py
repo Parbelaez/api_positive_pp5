@@ -127,24 +127,20 @@ else:
 # Django REST Framework
 
 REST_FRAMEWORK = {
-    # Pagination
+    'DEFAULT_AUTHENTICATION_CLASSES': [(
+        'rest_framework.authentication.SessionAuthentication'
+        if 'DEV' in os.environ
+        else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+    )],
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    # Date and time formats
-    'DATETIME_FORMAT': "%Y-%m-%d at %-I:%M %p",
+    'DATETIME_FORMAT': '%d %b %Y',
 }
-
-
-# Authentication: JWT in production, Session in development
-if 'SESS_AUTH' in os.environ and os.environ.get('SESS_AUTH') == 'True':
-    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
-            'rest_framework.authentication.SessionAuthentication',
-        ]
-else:
-    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
-            'rest_framework_simplejwt.authentication.JWTAuthentication',
-        ]
+if 'DEV' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
@@ -153,7 +149,7 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
+    'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer'
 }
 
 # CORS Configuration
