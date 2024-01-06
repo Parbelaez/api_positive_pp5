@@ -122,7 +122,7 @@ else:
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
     # The line will be left commented to test the DB connection
-    print('connected to postgres')
+    print('connected to postgres: ' + os.environ.get('DATABASE_URL'))
 
 # Django REST Framework
 
