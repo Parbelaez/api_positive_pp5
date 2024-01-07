@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 import re
 import dj_database_url
-from ../middleware/dj_rest_auth_logging import LogResponseMiddleware
 
 if os.path.exists('env.py'):
     import env
@@ -84,7 +83,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     # ... custom middleware ...
-    'LogResponseMiddleware',
+    'middleware.dj_rest_auth_logging.LogResponseMiddleware',
 ]
 
 SITE_ID = 1
