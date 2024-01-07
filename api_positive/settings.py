@@ -191,7 +191,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_EXPOSE_HEADERS = [
-    "Set-Cookie"
+    "set-cookie"
 ]
 
 # We need to disable the email verification in order to be able to create users from the API
