@@ -15,4 +15,6 @@ class LogResponseMiddleware:
             logger.info("Headers:")
             for header_name, header_value in headers.items():
                 logger.info(f"  {header_name}: {header_value}")
+            for header_name, header_value in response._headers.values():
+                logger.info(f"  {header_name}: {header_value}")
         return response
