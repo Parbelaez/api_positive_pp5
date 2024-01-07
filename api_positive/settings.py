@@ -82,6 +82,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    # ... custom middleware ...
+    'middleware.dj_rest_auth_logging.DjRestAuthLoggingMiddleware',
 ]
 
 SITE_ID = 1
