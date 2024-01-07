@@ -27,6 +27,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
+    "http://localhost:3000",
     "https://*.gitpod.io",
     "https://*.herokuapp.com",
 ]
@@ -137,25 +138,25 @@ REST_FRAMEWORK = {
 
 
 # Authentication: JWT in production, Session in development
-if 'SESS_AUTH' in os.environ and os.environ.get('SESS_AUTH') == 'True':
+if 'SESS_AUTH' in os.environ:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
             'rest_framework.authentication.SessionAuthentication',
         ]
 else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
-            'rest_framework_simplejwt.authentication.JWTAuthentication',
-        ]
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_SECURE': True,
+    'JWT_AUTH_SECURE': False,
     'JWT_AUTH_COOKIE': 'positive-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_SAMESITE': 'Lax',
-    'JWT_AUTH_COOKIE_DOMAIN' : ['.gitpod.io', '.herokuapp.com'],
+    'JWT_AUTH_SAMESITE': 'None',
+    'JWT_AUTH_COOKIE_DOMAIN' : '.gitpod.io',
 }
 
 REST_AUTH_SERIALIZERS = {
