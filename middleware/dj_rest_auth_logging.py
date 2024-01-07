@@ -9,7 +9,8 @@ class LogResponseMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         body = response.content
-        headers = dict(response.items())
+        headers = dict(response.getheaders())
+        # headers = dict(response.items())
         if request.path == '/dj-rest-auth/login/':
             logger.info(f"Response Body: {body}")
             logger.info("Headers:")
@@ -18,3 +19,4 @@ class LogResponseMiddleware:
             for header_name, header_value in response._headers.values():
                 logger.info(f"  {header_name}: {header_value}")
         return response
+
