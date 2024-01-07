@@ -9,5 +9,6 @@ class LogResponseMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         if request.path == '/dj-rest-auth/login/':
-            logger.info(response.content)
+            logger.info(f"Response Body: {response.content}")
+            logger.info(f"Response Headers: {dict(response.items())}")
         return response
