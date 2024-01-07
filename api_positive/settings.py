@@ -156,9 +156,9 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_SAMESITE': 'None',
-    # 'JWT_AUTH_COOKIE_DOMAIN' : '.gitpod.io',
+    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'LAX',
+    'JWT_AUTH_COOKIE_DOMAIN' : '.gitpod.io',
 }
 
 REST_AUTH_SERIALIZERS = {
@@ -166,9 +166,6 @@ REST_AUTH_SERIALIZERS = {
 }
 
 # CORS Configuration
-
-# !!!!!!!!!!!!!!!!!!!!!
-# !TEST!!!!!!!!!!
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
@@ -185,14 +182,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ]
     print(os.environ.get('CLIENT_ORIGIN_DEV'))
 
-# CORS_ALLOWED_ORIGINS = ['http://localhost:3000',]
-# CORS_ALLOWED_ORIGIN_REGEXES = [r"http://localhost:\d+"]
-
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_EXPOSE_HEADERS = [
-    "set-cookie"
-]
 
 # We need to disable the email verification in order to be able to create users from the API
 ACCOUNT_EMAIL_VERIFICATION = 'none'
