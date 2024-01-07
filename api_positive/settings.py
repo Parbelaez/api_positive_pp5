@@ -142,32 +142,35 @@ if 'SESS_AUTH' in os.environ:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
             'rest_framework.authentication.SessionAuthentication',
         ]
+    print('using session auth')
 else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
+    print('using jwt')
 
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_SECURE': False,
+    'JWT_AUTH_SECURE': True,
     'JWT_AUTH_COOKIE': 'positive-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
+    # 'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
-    'JWT_AUTH_COOKIE_DOMAIN' : '.gitpod.io',
+    # 'JWT_AUTH_COOKIE_DOMAIN' : '.gitpod.io',
 }
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
 }
 
-# CORS Configuration
+CORS Configuration
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN')
     ]
+    print(os.environ.get('CLIENT_ORIGIN'))
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
     extracted_url = re.match(
@@ -176,6 +179,8 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+    print(os.environ.get('CLIENT_ORIGIN_DEV'))
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
