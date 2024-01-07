@@ -165,7 +165,7 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
 }
 
-CORS Configuration
+# CORS Configuration
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN')
