@@ -166,6 +166,10 @@ REST_AUTH_SERIALIZERS = {
 }
 
 # CORS Configuration
+
+# !!!!!!!!!!!!!!!!!!!!!
+# !TEST!!!!!!!!!!
+
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN')
@@ -180,9 +184,15 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
     print(os.environ.get('CLIENT_ORIGIN_DEV'))
-# CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOWED_ORIGINS = ['http://localhost:3000',]
+# CORS_ALLOWED_ORIGIN_REGEXES = [r"http://localhost:\d+"]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_EXPOSE_HEADERS = [
+    "Set-Cookie"
+]
 
 # We need to disable the email verification in order to be able to create users from the API
 ACCOUNT_EMAIL_VERIFICATION = 'none'
