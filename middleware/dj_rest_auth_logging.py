@@ -11,7 +11,7 @@ class LogResponseMiddleware:
         body = response.content
         headers = dict(response.items())
         if request.path == '/dj-rest-auth/login/':
-            logger.info(response)
+            logger.info(response.headers)
             logger.info(f"Response Body: {body}")
             logger.info("Headers:")
             for header_name, header_value in headers.items():
