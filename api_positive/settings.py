@@ -176,6 +176,8 @@ else:
 # Authentication and cookies handling
 
 # SESSION_COOKIE_DOMAIN = ".herokuapp.com"
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SECURE = True
 # CSRF_COOKIE_DOMAIN = ".herokuapp.com"
 
 REST_AUTH = {
