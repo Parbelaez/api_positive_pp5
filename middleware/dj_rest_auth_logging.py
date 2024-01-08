@@ -10,8 +10,8 @@ class LogResponseMiddleware:
         response = self.get_response(request)
         body = response.content
         headers = dict(response.items())
-        connection: respnse.get(connection, alternate=None)
-        content_length = response.get(content-length, alternate=None)
+        connection: response.get(connection, alternate=None)
+        # content_length = response.get(content-length, alternate=None)
         if request.path == '/dj-rest-auth/login/':
             logger.info("Headers:")
             for header_name, header_value in headers.items():
