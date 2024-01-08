@@ -18,7 +18,7 @@ class LogResponseMiddleware:
                 logger.info(f"  {header_name}: {header_value}")
             logger.info(f"Connection:  {connection}")
             logger.info(f"Response Body: {body}")
-        set_cookie_headers = response.get_all('Set-Cookie')
+        set_cookie_headers = response.cookies
         if set_cookie_headers:
             logger.info("Set-Cookie headers:")
             for set_cookie_header in set_cookie_headers:
