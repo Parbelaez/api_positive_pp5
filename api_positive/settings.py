@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
@@ -147,8 +146,6 @@ else:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-    # The line will be left commented to test the DB connection
-    print('connected to postgres')
 
 # Django REST Framework
 
@@ -172,7 +169,6 @@ else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
-    print('using jwt')
 
 # Authentication and cookies handling
 
@@ -207,7 +203,6 @@ REST_AUTH_SERIALIZERS = {
 CORS_ALLOWED_ORIGINS = [
     os.environ.get('CLIENT_ORIGIN'),
 ]
-print(os.environ.get('CLIENT_ORIGIN'))
 
 # CORS_ALLOW_CREDENTIALS = True
 
@@ -264,5 +259,3 @@ WHITENOISE_ROOT = BASE_DIR / 'staticfiles' / 'build'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-print(REST_FRAMEWORK)
