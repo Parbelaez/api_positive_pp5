@@ -1,0 +1,27 @@
+.NavBar {
+    font-family: "Work Sans", sans-serif;
+    border: 1px solid #dadadf;
+}
+
+.NavLink {
+    text-decoration: none;
+    font-size: larger;
+    color: black;
+    padding: 15px;
+}
+
+.NavDropdown {
+    text-decoration: none;
+    font-size: larger;
+    color: black;
+    padding: 15px;
+}
+
+.NavLink:hover {
+    font-weight: bold;
+}
+
+.Active i {
+    color: #2142b2;
+    font-weight: bold;
+}
