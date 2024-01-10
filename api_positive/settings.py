@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import re
 import dj_database_url
 
 if os.path.exists('env.py'):
@@ -47,12 +46,12 @@ ALLOWED_HOSTS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
-    "https://*.gitpod.io",
-    "https://*.herokuapp.com",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://127.0.0.1:8000",
+#     "http://localhost:3000",
+#     "https://*.gitpod.io",
+#     "https://*.herokuapp.com",
+# ]
 
 # Cloudinary
 CLOUDINARY_STORAGE = {
@@ -203,24 +202,12 @@ REST_AUTH_SERIALIZERS = {
 
 # CORS Configuration
 
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN'),
-        'https://3000-parbelaez-frontendposit-v5c41uki4b1.ws-eu107.gitpod.io',
-        'https://front-end-positive-6064b9e075b4.herokuapp.com',
-    ]
-    print(os.environ.get('CLIENT_ORIGIN'))
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get('CLIENT_ORIGIN'),
+]
+print(os.environ.get('CLIENT_ORIGIN'))
 
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(
-        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
-    ).group(0)
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-    ]
-    print(os.environ.get('CLIENT_ORIGIN_DEV'))
-
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 # We need to disable the email verification in order to be able to create users from the API
 ACCOUNT_EMAIL_VERIFICATION = 'none'
