@@ -175,12 +175,15 @@ else:
 
 # Authentication and cookies handling
 
+# NOTE: for Heroku, there is no need to add the domain, as it is part of the Mozilla Foundation’s Public Suffix List
+# in other words: it won't work!
+
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_DOMAIN = ".herokuapp.com"
+# SESSION_COOKIE_DOMAIN = ".herokuapp.com"
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = ".herokuapp.com"
+# CSRF_COOKIE_DOMAIN = ".herokuapp.com"
 
 REST_AUTH = {
     'USE_JWT': True,
@@ -191,7 +194,7 @@ REST_AUTH = {
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
-    'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
+    # 'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
 }
 
 REST_AUTH_SERIALIZERS = {
