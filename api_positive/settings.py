@@ -203,6 +203,7 @@ if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN'),
         'https://3000-parbelaez-frontendposit-v5c41uki4b1.ws-eu107.gitpod.io',
+        'https://front-end-positive-6064b9e075b4.herokuapp.com',
     ]
     print(os.environ.get('CLIENT_ORIGIN'))
 
