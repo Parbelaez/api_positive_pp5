@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import { Alert } from "react-bootstrap";
 
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
-import { setTokenTimestamp } from "../../utils/utils";
+import { setTokenTimestamp, setAccessToken } from "../../utils/utils";
 
 function Login() {
     const setCurrentUser = useSetCurrentUser();
@@ -33,9 +33,8 @@ function Login() {
                 loginData
             );
             setCurrentUser(data.user);
-            // setAccessToken(data);
+            setAccessToken(data);
             setTokenTimestamp(data);
-            localStorage.setItem("access_token", data?.access_token)
             navigate("/");
         } catch (error) {
             // The question mark will check if there is a response object in the error object

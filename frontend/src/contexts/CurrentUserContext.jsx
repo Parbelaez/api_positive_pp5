@@ -16,10 +16,7 @@ export const CurrentUserProvider = ({ children }) => {
 
     const handleMount = async () => {
         try {
-            const config = {
-                headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-            };
-            const { data } = await axiosRes.get("dj-rest-auth/user/", config);
+            const { data } = await axiosRes.get("dj-rest-auth/user/");
             setCurrentUser(data);
         } catch (error) {
             console.log(error);
