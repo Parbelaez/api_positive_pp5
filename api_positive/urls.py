@@ -1,32 +1,31 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import root_route
+from django.views.generic import TemplateView
+# from .views import root_route
 # JWT Token Authentication
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
-    path('', root_route),
+    # path('', root_route),
+    path('', TemplateView.as_view(template_name='index.html')),
     path('admin/', admin.site.urls),
     # Django REST Framework
-    path('api-auth/', include('rest_framework.urls')),
+    path('api/api-auth/', include('rest_framework.urls')),
     # dj-rest-auth for login and logout
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('api/dj-rest-auth/', include('dj_rest_auth.urls')),
     # dj-rest-auth for registration
     path(
-        'dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')
+        'api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')
     ),
-
-    # JWT Token Authentication
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
     # Apps
-    path('profiles/', include('profiles.urls')),
-    path('places/', include('places.urls')),
-    path('posts/', include('posts.urls')),
-    path('likes/', include('likes.urls')),
+    path('api/profiles/', include('profiles.urls')),
+    path('api/places/', include('places.urls')),
+    path('api/posts/', include('posts.urls')),
+    path('api/likes/', include('likes.urls')),
 ]
+
+handler404 = TemplateView.as_view(template_name='index.html')

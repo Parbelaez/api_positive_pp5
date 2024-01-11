@@ -1,31 +1,10 @@
 from pathlib import Path
 import os
-import re
 import dj_database_url
+from datetime import timedelta
 
 if os.path.exists('env.py'):
     import env
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-        'yourapp': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,8 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
     'cloudinary',
 
     # Django REST Framework
@@ -97,15 +76,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
-    # ... custom middleware ...
-    'middleware.dj_rest_auth_logging.LogResponseMiddleware',
 ]
 
 SITE_ID = 1
@@ -115,7 +92,7 @@ ROOT_URLCONF = 'api_positive.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'staticfiles', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,8 +123,6 @@ else:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-    # The line will be left commented to test the DB connection
-    print('connected to postgres')
 
 # Django REST Framework
 
@@ -166,61 +141,34 @@ if 'SESS_AUTH' in os.environ:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
             'rest_framework.authentication.SessionAuthentication',
         ]
-    print('using session auth')
 else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
-    print('using jwt')
 
 # Authentication and cookies handling
-
-# NOTE: for Heroku, there is no need to add the domain, as it is part of the Mozilla Foundation’s Public Suffix List
-# in other words: it won't work!
-
-SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SECURE = True
-# SESSION_COOKIE_DOMAIN = ".herokuapp.com"
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = True
-# CSRF_COOKIE_DOMAIN = ".herokuapp.com"
-
-REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_SECURE': True,
-    'JWT_AUTH_COOKIE': 'positive-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
-    # When this flag is set to false, the refresh token will be sent in the body
-    # Unless, it will be only in a cookie
-    'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_SAMESITE': 'None',
-    # 'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
-}
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 # CORS Configuration
 
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN'),
-        'https://3000-parbelaez-frontendposit-v5c41uki4b1.ws-eu107.gitpod.io',
-        'https://front-end-positive-6064b9e075b4.herokuapp.com',
-    ]
-    print(os.environ.get('CLIENT_ORIGIN'))
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get('CLIENT_ORIGIN'),
+]
 
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(
-        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
-    ).group(0)
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-    ]
-    print(os.environ.get('CLIENT_ORIGIN_DEV'))
-
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 # We need to disable the email verification in order to be able to create users from the API
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -268,10 +216,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+WHITENOISE_ROOT = BASE_DIR / 'staticfiles' / 'build'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-print(REST_FRAMEWORK)
