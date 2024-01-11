@@ -11,18 +11,15 @@ export const useCurrentUser = () => useContext(CurrentUserContext);
 export const useSetCurrentUser = () => useContext(SetCurrentUserContext);
 
 export const CurrentUserProvider = ({ children }) => {
-    console.log("Current user provider 1");
     const [currentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
 
-    //!console log the current user provider - is it changing?
-    console.log("Current user provider 2");
-
     const handleMount = async () => {
-        console.log("handle mount");
         try {
-            const { data } = await axiosRes.get("dj-rest-auth/user/");
-            console.log("Context data", data);
+            const config = {
+                headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+            };
+            const { data } = await axiosRes.get("dj-rest-auth/user/", config);
             setCurrentUser(data);
         } catch (error) {
             console.log(error);
@@ -39,18 +36,15 @@ export const CurrentUserProvider = ({ children }) => {
         axiosReq.interceptors.request.use(
             async (config) => {
                 if (shouldRefreshToken()) {
-                    console.log("should refresh token")
                     try {
                         await axios.post("/dj-rest-auth/token/refresh/");
                     } catch (error) {
-                        console.log("ISSUE IS HERE")
                         setCurrentUser((prevCurrentUser) => {
                             if (prevCurrentUser) {
                                 navigate("/login");
                             }
                             return null;
                         });
-                        console.log("Remove token timestamp by request interceptor");
                         removeTokenTimestamp();
                         return config;
                     }
@@ -75,9 +69,6 @@ export const CurrentUserProvider = ({ children }) => {
                             }
                             return null;
                         });
-                        console.log(
-                            "Remove token timestamp by response interceptor"
-                        );
                         removeTokenTimestamp();
                     }
                     return axios(error.config);
