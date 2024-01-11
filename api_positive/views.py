@@ -6,7 +6,7 @@ from rest_framework.response import Response
 def root_route(request):
     return Response({
         'message': 'Welcome to the Positive API',
-        'version': '1.1.1',
+        'version': '1.2.1',
         'author': 'Paulo Arbeláez',
-        'Release': '20240110.21.51_m',
+        'Release': '20240111.22.20_m',
     })
