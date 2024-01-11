@@ -194,6 +194,11 @@ REST_AUTH = {
     # 'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
 }
