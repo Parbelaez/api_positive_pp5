@@ -25,20 +25,17 @@ function Login() {
     let navigate = useNavigate();
 
     const handleSubmit = async (event) => {
-        console.log("submitting")
         event.preventDefault();
 
         try {
-            console.log("data to submit: ", loginData);
             const { data } = await axios.post(
                 "/dj-rest-auth/login/",
                 loginData
             );
-            // ! log data back from dj-rest-auth
-            console.log("recieved data: ", data);
             setCurrentUser(data.user);
             // setAccessToken(data);
             setTokenTimestamp(data);
+            localStorage.setItem("access_token", data?.access_token)
             navigate("/");
         } catch (error) {
             // The question mark will check if there is a response object in the error object
