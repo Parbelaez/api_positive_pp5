@@ -21,8 +21,8 @@ urlpatterns = [
     ),
 
     # JWT Token Authentication
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('dj-rest-auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Apps
     path('profiles/', include('profiles.urls')),
