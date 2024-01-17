@@ -1,12 +1,13 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions, serializers
+from dj_rest_auth import jwt_auth
 import logging
 
 
 logger = logging.getLogger(__name__)
 
-class JWTCookieAuthentication(JWTAuthentication):
+class CustomCookieAuthentication(jwt_auth.JWTCookieAuthentication):
     """
     An authentication plugin that hopefully authenticates requests through a JSON web
     token provided in a request cookie (and through the header as normal, with a
