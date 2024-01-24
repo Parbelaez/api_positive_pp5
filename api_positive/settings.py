@@ -196,7 +196,6 @@ REST_AUTH = {
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
-    # 'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
 }
 
 REST_AUTH_SERIALIZERS = {
@@ -208,8 +207,6 @@ REST_AUTH_SERIALIZERS = {
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN'),
-        'https://3000-parbelaez-frontendposit-nymqwambjgx.ws-eu107.gitpod.io',
-        'https://front-end-positive-6064b9e075b4.herokuapp.com',
     ]
     print(os.environ.get('CLIENT_ORIGIN'))
 
@@ -275,5 +272,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-print(REST_FRAMEWORK)
