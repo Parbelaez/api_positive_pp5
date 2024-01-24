@@ -12,7 +12,7 @@ class PostList(generics.ListCreateAPIView):
     The perform_create method is used to set the owner of the post to the
     current user.
     """
-    authentication = authentication.TokenAuthentication
+    # authentication = authentication.TokenAuthentication
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Post.objects.all().annotate(
