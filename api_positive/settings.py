@@ -200,8 +200,6 @@ REST_AUTH = {
     # 'JWT_AUTH_COOKIE_DOMAIN' : ".herokuapp.com",
 }
 
-JWT_AUTH_COOKIE = 'positive-auth',
-
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
 }

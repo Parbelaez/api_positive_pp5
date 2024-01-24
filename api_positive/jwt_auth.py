@@ -10,16 +10,16 @@ logger = logging.getLogger(__name__)
 
 class CustomCookieAuthentication(jwt_auth.JWTCookieAuthentication):
     """
-    An authentication plugin that hopefully authenticates requests through a JSON web
-    token provided in a request cookie (and through the header as normal, with a
-    preference to the header).
+    An extended class to fix an inconsistency in dj-rest-auth when
+    cookies authentication is needed.
     """
 
     def authenticate(self, request):
-        cookie_name = settings.JWT_AUTH_COOKIE
+        cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
         logger.info(f"Auth Cookie Name:  {cookie_name}")
         header = self.get_header(request)
         logger.info(f"Header:  {header}")
+        logger.info(request)
         if header is None:
             if cookie_name:
                 raw_token = request.COOKIES.get(cookie_name)
