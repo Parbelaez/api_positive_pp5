@@ -171,7 +171,6 @@ else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'api_positive.jwt_auth.CustomCookieAuthentication',
-
     ]
     print('using jwt')
 

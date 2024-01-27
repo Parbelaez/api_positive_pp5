@@ -46,6 +46,7 @@ This is the Positive Social Network API, a project for the Code Institute Full S
 - [Bugs](#bugs)
     - [Solved](#Solved)
     - [Unsolved](#Unsolved)
+- [Credits](#credits)
 
 
 ## Introduction
@@ -1215,13 +1216,15 @@ The solution is to downgrade Django to 4.2.7, which is the latest long term supp
 
 (Taken from the [Code Institute DRF](https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/a6250c9e9b284dbf99e53ac8e8b68d3e/0c9a4768eea44c38b06d6474ad21cf75/?child=first) tutorial)
 
-It turns out that dj-rest-auth has a bug that doesn’t allow users to log out (ref: DRF Rest Auth Issues).
+It turns out that dj-rest-auth has a bug that doesn’t allow users to log out in version 2 and below (ref: DRF Rest Auth Issues).
 
 The issue is that the samesite attribute we set to ‘None’ in settings.py (JWT_AUTH_SAMESITE = 'None') is not passed to the logout view. This means that we can’t log out, but must wait for the refresh token to expire instead.
 
 Proposed Solution: One way to fix this issue is to have our own logout view, where we set both cookies to an empty string and pass additional attributes like secure, httponly and samesite, which was left out by mistake by the library.
 
 All fixes are indicated in the code with the comment: # dj-rest-auth bug fix workaround.
+
+*NOTE: * as we used the latest version of dj-rest-auth, this bug was already fixed.
 
 
 #### 3. No usage of the access token
@@ -1265,5 +1268,77 @@ When trying to create a place using Postman, the following error was raised:
 
 ```bash
 "detail": "CSRF Failed: CSRF token missing or incorrect."
-````
+```
 
+#### 6. The cookies authenticatin was not working
+
+After the login, the set-cookie message was correctly sent by the BE, and the cookies were stored in the browser's cookies jar. But, when trying to access the protected views, the following error was raised:
+
+```bash
+"detail": "Authentication credentials were not provided."
+```
+
+To be able to indentify where this problem was originated (either BE or FE), I created a middleware to get all HTTP requests and responses: dj_rest_auth_logging.py. In this files, many logs were created and I was able to check that the cookies were correctly sent by the BE and then sent back by the FE. So, the problem was in the BE.
+
+What was happening is that the BE was expecting a Bearer Token Authentication instead of the expected cookies authentication. Therefore, the problem must have been in the authentication claseses in the settings.py file, for which I had the following:
+
+```python
+# Authentication: JWT in production, Session in development
+if 'SESS_AUTH' in os.environ:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+            'rest_framework.authentication.SessionAuthentication',
+        ]
+    print('using session auth')
+else:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ]
+```
+
+I therefore proceeded to check the JWTCookieAuthentication class in the dj_rest_auth package, and I found that the cookies name are taken from the variables used in dj-rest-auth v2 and lower:
+
+```python
+class JWTCookieAuthentication(JWTAuthentication):
+    ...
+    def authenticate(self, request):
+        cookie_name = api_settings.JWT_AUTH_COOKIE
+        header = self.get_header(request)
+        if header is None:
+            if cookie_name:
+                raw_token = request.COOKIES.get(cookie_name)
+                if api_settings.JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED: #True at your own risk
+                    self.enforce_csrf(request)
+                elif raw_token is not None and api_settings.JWT_AUTH_COOKIE_USE_CSRF:
+                    self.enforce_csrf(request)
+            else:
+                return None
+    ...
+```
+
+As I am using dj-rest-auth v3, the variables are declared in a dictionary (as it is the new standard in Django):
+
+```python
+REST_AUTH = {
+...
+    'JWT_AUTH_COOKIE': 'positive-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'positive-refresh-token',
+...
+}
+```
+
+This was causing that the cookie name was not being found, and therefore, the authentication was not working (returned None).
+
+I proceeded then to extend the JWTCookieAuthentication class, and override the authenticate method in the jwt_auth.py file in the root of the api, so I could use the new variables:
+
+```python
+class CustomCookieAuthentication(jwt_auth.JWTCookieAuthentication):
+    """
+    An extended class to fix an inconsistency in dj-rest-auth when
+    cookies authentication is needed.
+    """
+
+    def authenticate(self, request):
+        cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
+        ...
+```
+This bug is now reepored in the dj-rest-auth GitHub repository: [dj-rest-auth GitHub](https://github.com/iMerica/dj-rest-auth/) under the issue number [584](https://github.com/iMerica/dj-rest-auth/issues/584).
