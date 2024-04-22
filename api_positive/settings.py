@@ -194,7 +194,7 @@ REST_AUTH = {
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
-    # 'JWT_AUTH_SAMESITE': 'None',
+    'JWT_AUTH_SAMESITE': 'None',
 }
 
 REST_AUTH_SERIALIZERS = {
