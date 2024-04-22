@@ -1342,3 +1342,11 @@ class CustomCookieAuthentication(jwt_auth.JWTCookieAuthentication):
         ...
 ```
 This bug is now reepored in the dj-rest-auth GitHub repository: [dj-rest-auth GitHub](https://github.com/iMerica/dj-rest-auth/) under the issue number [584](https://github.com/iMerica/dj-rest-auth/issues/584).
+
+But, there is something further regarding this topic, and it is that, with the current setup (the one in the tutorial), the set-cookie message is rejected by most browsers nowadays, as it is a security risk. Therefore, the cookies are not stored in the browser's cookies jar, and the authentication is not working.
+
+The reason for this is that the cookies are set with the SameSite attribute set to None and, when this setting is used, the Secure attribute must also be set to True and, most importantly, the attribute "PARTITIONED" must be set to True. Now, up to the latest version of dj-rest-auth, this is not possible, as the attribute "PARTITIONED" is not implemented yet.
+
+A new issue was created in the dj-rest-auth GitHub repository: [Issue 622](https://github.com/iMerica/dj-rest-auth/issues/622).
+
+It is recommended then to use Firefox to test the cookies authentication, as it is the only browser that still accepts the set-cookie message with the SameSite attribute set to None. Or, a better solution would be to combine the back-end and the front-end in the same project, so the cookies are stored in the same domain.
