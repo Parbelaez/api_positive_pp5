@@ -215,7 +215,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-        r'http://localhost:3000',
+        # r'http://localhost:3000',
     ]
 #     print(os.environ.get('CLIENT_ORIGIN_DEV'))
 
