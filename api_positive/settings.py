@@ -202,11 +202,17 @@ REST_AUTH_SERIALIZERS = {
 }
 
 # !!!CORS Configuration
+# !!!Clear the localhost after the development
 
-# if 'CLIENT_ORIGIN' in os.environ:
-#     CORS_ALLOWED_ORIGINS = [
-#         os.environ.get('CLIENT_ORIGIN'),
-#     ]
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('CLIENT_ORIGIN'),
+        "http://localhost:3000",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:3000',
+    ]
 #     print(os.environ.get('CLIENT_ORIGIN'))
 
 # if 'CLIENT_ORIGIN_DEV' in os.environ:
@@ -218,12 +224,6 @@ REST_AUTH_SERIALIZERS = {
 #         # r'http://localhost:3000',
 #     ]
 #     print(os.environ.get('CLIENT_ORIGIN_DEV'))
-
-# !!!UNCOMMENT ABOVE AND DELETE BELOW FOR PRODUCTION
-
-# CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
