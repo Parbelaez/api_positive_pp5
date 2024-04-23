@@ -195,10 +195,7 @@ REST_AUTH = {
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
-}
-
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer'
+    'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer',
 }
 
 # !!!CORS Configuration
