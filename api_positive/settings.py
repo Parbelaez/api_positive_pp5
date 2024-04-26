@@ -166,13 +166,11 @@ if 'SESS_AUTH' in os.environ:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
             'rest_framework.authentication.SessionAuthentication',
         ]
-    print('using session auth')
 else:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'api_positive.jwt_auth.CustomCookieAuthentication',
     ]
-    print('using jwt')
 
 # Authentication and cookies handling
 
@@ -181,10 +179,8 @@ else:
 
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
-# SESSION_COOKIE_DOMAIN = ".herokuapp.com"
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
-# CSRF_COOKIE_DOMAIN = ".herokuapp.com"
 
 REST_AUTH = {
     'USE_JWT': True,
@@ -198,8 +194,7 @@ REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer',
 }
 
-# !!!CORS Configuration
-# !!!Clear the localhost after the development
+# CORS Configuration
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
@@ -210,17 +205,6 @@ else:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000',
     ]
-#     print(os.environ.get('CLIENT_ORIGIN'))
-
-# if 'CLIENT_ORIGIN_DEV' in os.environ:
-#     extracted_url = re.match(
-#         r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
-#     ).group(0)
-#     CORS_ALLOWED_ORIGIN_REGEXES = [
-#         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-#         # r'http://localhost:3000',
-#     ]
-#     print(os.environ.get('CLIENT_ORIGIN_DEV'))
 
 CORS_ALLOW_CREDENTIALS = True
 

@@ -7,6 +7,7 @@ class PlaceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
+    num_posts = serializers.ReadOnlyField()
 
     # To optimize the resources usage, we need to set some image validations
     # to avoid sending the image to cloudinary if it is not compliant with
@@ -54,6 +55,7 @@ class PlaceSerializer(serializers.ModelSerializer):
             'phone_number',
             'description',
             'image',
+            'num_posts',
         ]
     
     def create(self, validated_data):
