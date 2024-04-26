@@ -5,6 +5,7 @@ from django.db import IntegrityError
 
 class PlaceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    owner_id = serializers.ReadOnlyField(source='owner.id')
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     num_posts = serializers.ReadOnlyField()
@@ -42,6 +43,7 @@ class PlaceSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'owner',
+            'owner_id',
             'profile_id',
             'profile_image',
             'created_at',
