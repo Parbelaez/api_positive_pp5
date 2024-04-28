@@ -11,6 +11,10 @@ class PostSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     # We will use the Method Field to realte if the logged user has liked
     # the post or not, and the type of like
+    place_name = serializers.ReadOnlyField(source='place.place_name')
+    place_country = serializers.ReadOnlyField(source='place.country')
+    place_city = serializers.ReadOnlyField(source='place.city')
+    place_address = serializers.ReadOnlyField(source='place.address')
     like_id = serializers.SerializerMethodField()
     like_type = serializers.SerializerMethodField()
     num_tops = serializers.ReadOnlyField()
@@ -93,6 +97,9 @@ class PostSerializer(serializers.ModelSerializer):
             'updated_at',
             'place',
             'place_name',
+            'place_country',
+            'place_city',
+            'place_address',
             'visit_date',
             'title',
             'content',
