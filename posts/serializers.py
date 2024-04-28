@@ -92,6 +92,7 @@ class PostSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'place',
+            'place_name',
             'visit_date',
             'title',
             'content',
