@@ -3,6 +3,7 @@ from .models import Place
 from .serializers import PlaceSerializer
 from api_positive.permissions import IsOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
+from django_filters.rest_framework import DjangoFilterBackend
 from  django.db.models import Count
 
 
@@ -14,7 +15,16 @@ class PlaceList(generics.ListCreateAPIView):
 
     # We add the filter and ordering backends to be able to filter and order
     # the places by name and city
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend
+        ]
+    filterset_fields = [
+        'owner__profile',
+        'country',
+        'city',
+    ]
     ordering_fields = ['place_name', 'country','city']
     search_fields = ['place_name', 'country', 'city']
 

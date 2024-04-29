@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+    'django_filters',
 
     # Django REST Framework
     'rest_framework',
