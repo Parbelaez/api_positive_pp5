@@ -42,9 +42,9 @@ class PostList(generics.ListCreateAPIView):
         'place',
         'post_likes__owner__profile',
     ]
-    search_fields = ['post_place__place_name', 'post_place__city']
+    search_fields = ['post_place__place_name', 'post_place__country', 'post_place__city']
     ordering_fields = ['post_place__place_name',
-        'post_place__city', 'created_at'
+        'post_place__city', 'post_place__country', 'created_at'
         ]
 
     def perform_create(self, serializer):
