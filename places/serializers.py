@@ -6,6 +6,7 @@ from django.db import IntegrityError
 class PlaceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     owner_id = serializers.ReadOnlyField(source='owner.id')
+    is_owner = is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     num_posts = serializers.ReadOnlyField()
@@ -13,6 +14,9 @@ class PlaceSerializer(serializers.ModelSerializer):
     # To optimize the resources usage, we need to set some image validations
     # to avoid sending the image to cloudinary if it is not compliant with
     # our requirements of size and format
+
+    def get_is_owner(self, obj):
+        return self.context['request'].user == obj.owner
 
     def validate_image(self, value):
         # We check if the image is bigger than 2MB
@@ -44,6 +48,7 @@ class PlaceSerializer(serializers.ModelSerializer):
             'id',
             'owner',
             'owner_id',
+            'is_owner',
             'profile_id',
             'profile_image',
             'created_at',
