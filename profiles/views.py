@@ -20,11 +20,7 @@ class ProfileList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all().annotate(
         num_posts=Count('owner__post', distinct=True),
-        num_places=Count('owner__place', distinct=True),
-        limit = self.request.query_params.get('limit', None)
-        if limit:
-            return self.queryset[:int(limit)]
-        return self.queryset
+        num_places=Count('owner__place', distinct=True)
         ).order_by('-created_at')
     filter_backends = [filters.OrderingFilter]
     # ordering_fields = ['num_posts', 'num_places']
