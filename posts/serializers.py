@@ -4,6 +4,23 @@ from likes.models import Likes
 from datetime import datetime
 
 
+class PostLikesSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    num_tops = serializers.ReadOnlyField()
+    num_likes = serializers.ReadOnlyField()
+    num_dislikes = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Post
+        fields = [
+            ## the id field is created automatically by django
+            ## but we need to declare it here to be able to access it
+            'id',
+            'num_tops',
+            'num_likes',
+            'num_dislikes',
+        ]
+
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
