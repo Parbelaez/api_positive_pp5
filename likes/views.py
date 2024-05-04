@@ -58,4 +58,4 @@ class LikeDetail(generics.RetrieveUpdateDestroyAPIView):
             )
         ).get(id=post_id)
         serialized_data = PostLikesSerializer(post)
-        return Response(serialized_data.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serialized_data.data, status=status.HTTP_200_OK)
