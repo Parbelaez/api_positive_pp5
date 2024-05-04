@@ -14,6 +14,13 @@ class LikeList(generics.ListCreateAPIView):
     serializer_class = LikeSerializer
     queryset = Likes.objects.all()
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context[
+            "request"
+        ] = self.request
+        return context
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -34,7 +41,7 @@ class LikeList(generics.ListCreateAPIView):
             filter=Q(post_likes__like_type='dislike')
             )
         ).get(id=post_id)
-        serialized_data = PostLikesSerializer(post)
+        serialized_data = PostLikesSerializer(post, context={"request": request})
         return Response(serialized_data.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class LikeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -57,5 +64,5 @@ class LikeDetail(generics.RetrieveUpdateDestroyAPIView):
             filter=Q(post_likes__like_type='dislike')
             )
         ).get(id=post_id)
-        serialized_data = PostLikesSerializer(post)
+        serialized_data = PostLikesSerializer(post, context={"request": request})
         return Response(serialized_data.data, status=status.HTTP_200_OK)

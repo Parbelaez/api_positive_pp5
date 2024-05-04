@@ -9,6 +9,21 @@ class PostLikesSerializer(serializers.ModelSerializer):
     num_tops = serializers.ReadOnlyField()
     num_likes = serializers.ReadOnlyField()
     num_dislikes = serializers.ReadOnlyField()
+    like_id = serializers.SerializerMethodField()
+
+    # We need to define the get_like_id method to be able to access the
+    # like_id field in the serializer
+    def get_like_id(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            try:
+                like = Likes.objects.filter(
+                    owner=user, post=obj
+                ).first()
+                return like.id if like else None
+            except Exception:
+                return None
+        return None
 
     class Meta:
         model = Post
@@ -16,6 +31,7 @@ class PostLikesSerializer(serializers.ModelSerializer):
             ## the id field is created automatically by django
             ## but we need to declare it here to be able to access it
             'id',
+            'like_id',
             'num_tops',
             'num_likes',
             'num_dislikes',
