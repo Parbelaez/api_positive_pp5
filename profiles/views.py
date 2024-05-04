@@ -14,7 +14,7 @@ from  django.db.models import Count
 class ProfileList(generics.ListAPIView):
     """
     List all profiles.
-    No create view ass porodile creation is handled by django signals
+    No create view as the creation is handled by django signals
     """
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]

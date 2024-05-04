@@ -7,7 +7,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     # the owner relationship
     # This can be better understood by looking at the Entities Relationship
     # Diagram in the readme file.
-    owner = serializers.ReadOnlyField(source='owner.username')
+    owner = serializers.ReadOnlyField(source='owner.username', read_only=True)
+    first_name = serializers.ReadOnlyField(source='owner.first_name')
+    last_name = serializers.ReadOnlyField(source='owner.last_name')
     is_owner = serializers.SerializerMethodField()
     num_posts = serializers.ReadOnlyField()
     num_places = serializers.ReadOnlyField()
@@ -24,7 +26,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             'owner',
             'created_at',
             'updated_at',
-            'name',
+            'first_name',
+            'last_name',
             'about_you',
             'image',
             'is_owner',
