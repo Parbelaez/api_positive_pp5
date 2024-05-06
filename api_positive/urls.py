@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-# from .views import logout_route
+from .views import logout_route
 # JWT Token Authentication
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
