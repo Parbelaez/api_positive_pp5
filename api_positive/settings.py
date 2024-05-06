@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import re
 import dj_database_url
 
 if os.path.exists('env.py'):
@@ -44,6 +43,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '.gitpod.io',
     '.herokuapp.com',
+    '127.0.0.1'
 ]
 
 
@@ -191,21 +191,19 @@ REST_AUTH = {
     # When this flag is set to false, the refresh token will be sent in the body
     # Unless, it will be only in a cookie
     'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_SAMESITE': 'None',
+    'JWT_AUTH_SAMESITE': 'Lax',
     'USER_DETAILS_SERIALIZER': 'api_positive.serializers.CurrentUserSerializer',
 }
 
 # CORS Configuration
 
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN'),
-        "http://localhost:3000",
-    ]
-else:
-    CORS_ALLOWED_ORIGINS = [
-        'http://localhost:3000',
-    ]
+# CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get('CLIENT_ORIGIN'),
+    "http://localhost:3000",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
