@@ -197,15 +197,17 @@ REST_AUTH = {
 
 # CORS Configuration
 
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN'),
-        "http://localhost:3000",
-    ]
-else:
-    CORS_ALLOWED_ORIGINS = [
-        'http://localhost:3000',
-    ]
+CORS_ALLOW_ALL_ORIGINS = True
+
+# if 'CLIENT_ORIGIN' in os.environ:
+#     CORS_ALLOWED_ORIGINS = [
+#         os.environ.get('CLIENT_ORIGIN'),
+#         "http://localhost:3000",
+#     ]
+# else:
+#     CORS_ALLOWED_ORIGINS = [
+#         'http://localhost:3000',
+#     ]
 
 CORS_ALLOW_CREDENTIALS = True
 
